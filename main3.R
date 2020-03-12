@@ -6,6 +6,7 @@
 # most value-for-money deal on Airbnbs in New York City.
 # The project uses the NYC Airbnb data obtained from Kaggle. 
 # (https://www.kaggle.com/dgomonov/new-york-city-airbnb-open-data#AB_NYC_2019.csv) 
+setwd('E:/programming/projects/R_project')
 nyc_ab = read.csv('nyc-airbnb.csv')
 head(nyc_ab)
 
@@ -127,6 +128,19 @@ for(i in 1:nrow(bklyn)){
 bklyn$dist = dist
 bklyn.trimmed = subset(bklyn,select = c(neighbourhood_group,neighbourhood,room_type,latitude,longitude,
                                               dist,price,minimum_nights,number_of_reviews,availability_365))
+
+# Creating a data frame with max listing price of 600, since a lot of the prices 
+# skew the data due to being outliers
+test = bklyn.trimmed[bklyn.trimmed$price<=600,]
+# The smooth scatter plot plots the density of observations in a particular region.
+# The darker the color, the more number of points in the region.
+png('listing_price_density.png',width = 800, height = 640)
+smoothScatter(x =test$dist,y = test$price,xlab = 'Distance from Commencement Venue',
+              ylab = 'Price', main = 'Density of Listings ')
+dev.off()
+# From the image, we observe that most of the listings under a hundred dollars are
+# available in the regions that are around an euclidean distance of 0.04 from the 
+# commencement venue.
 
 # For each neighbourhood in Brooklyn, the average prices are plotted.
 # It is seen that as you move closer to downtown Brooklyn, the prices rise.
