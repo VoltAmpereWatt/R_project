@@ -6,8 +6,9 @@
 # most value-for-money deal on Airbnbs in New York City.
 # The project uses the NYC Airbnb data obtained from Kaggle. 
 # (https://www.kaggle.com/dgomonov/new-york-city-airbnb-open-data#AB_NYC_2019.csv) 
-setwd('E:/programming/projects/R_project')
-nyc_ab = read.csv('nyc-airbnb.csv')
+setwd('./Wherebnb')
+getwd()
+nyc_ab = read.csv('data/nyc-airbnb.csv')
 head(nyc_ab)
 
 
@@ -36,7 +37,7 @@ max_count = max(borough_counts$Freq)
 
 # This data is now plotted using a barplot.
 # dev.new()
-png('room_count_borough.png',width = 900,height = 720)
+png('reports/room_count_borough.png',width = 900,height = 720)
 ggplot(data = borough_counts,aes(Var1,Freq)) %+% geom_bar(stat='identity',fill='darkred') %+%
   theme(axis.text.x = element_text(angle = 0, hjust = 0.5),axis.text=element_text(size=20),
         plot.title = element_text(size = 30),
@@ -64,21 +65,20 @@ bklyn_neighbourhoods = bklyn_neighbourhoods[order(bklyn_neighbourhoods$Freq,decr
 bklyn_neighbourhoods = bklyn_neighbourhoods[bklyn_neighbourhoods$Freq > 0,]
 # Finding the top 15 neighbourhoods with most listings
 # dev.new()
-png('listing_count_bk.png',width = 1080,height = 1080)
-ggplot(bklyn_neighbourhoods,aes(reorder(Var1,Freq),Freq)) %+% geom_bar(stat='identity',fill='darkgreen') %+%
-  theme(axis.text.x = element_text(angle = 0, hjust = 0.5),axis.text=element_text(size=20),
+png('reports/listing_count_bk.png',width = 1600,height = 1600)
+ggplot(bklyn_neighbourhoods,aes(Var1,Freq)) %+% geom_bar(stat='identity',fill='darkblue') %+%
+  theme(axis.text=element_text(size=20),
         plot.title = element_text(size = 30),
         legend.text = element_text(size = 20),legend.title = element_text(size = 30),
         axis.title=element_text(size=30,face="bold")) %+% ylim(0,5000) %+%
-  coord_flip() %+% xlab('Count') %+% ylab('Neighbourhood') %+% 
-  ggtitle('Brooklyn Neighbourhoods with the most Airbnbs')
+  coord_polar() %+% xlab('Count') %+% ylab('Neighbourhood') %+% scale_y_log10() %+%
+  ggtitle('Brooklyn Neighbourhoods with the most Airbnbs (Log10 scale)')
 dev.off()
 
 # With three, probably more, people involved, it is imperative that I have at least a private room
 # or apartment. We shall examine the kinds of room types these listings actually are.
 install.packages('RColorBrewer')
 library(RColorBrewer)
-display.brewer.all()
 # Create a two-way table with neighbourhood and room type.
 room_types = xtabs(~neighbourhood+room_type,data=bklyn)
 # Now, when you look at room_types, it lists the data from all the neighbourhoods in the entire city.
@@ -87,7 +87,7 @@ top15 =  head(bklyn_neighbourhoods,15)
 room_types_bklyn = as.data.frame(room_types[c(top15$Var1),])
 # Visualizing this information
 # dev.new()
-png('room_type_percentage_bk.png',width = 1080,height = 1920)
+png('reports/room_type_percentage_bk.png',width = 1080,height = 1920)
 ggplot() %+% geom_bar(aes(y=Freq,x=reorder(neighbourhood,Freq),fill=room_type),
                     data=room_types_bklyn,stat='identity',
                     position='fill') %+% coord_flip() %+% xlab('Percentage of Room Types') %+%
@@ -134,7 +134,7 @@ bklyn.trimmed = subset(bklyn,select = c(neighbourhood_group,neighbourhood,room_t
 test = bklyn.trimmed[bklyn.trimmed$price<=600,]
 # The smooth scatter plot plots the density of observations in a particular region.
 # The darker the color, the more number of points in the region.
-png('listing_price_density.png',width = 800, height = 640)
+png('reports/listing_price_density.png',width = 800, height = 640)
 smoothScatter(x =test$dist,y = test$price,xlab = 'Distance from Commencement Venue',
               ylab = 'Price', main = 'Density of Listings ')
 dev.off()
@@ -144,7 +144,7 @@ dev.off()
 
 # For each neighbourhood in Brooklyn, the average prices are plotted.
 # It is seen that as you move closer to downtown Brooklyn, the prices rise.
-png('mean_price_neighbourhood_bk.png',width = 1080,height = 1080)
+png('reports/mean_price_neighbourhood_bk.png',width = 1080,height = 1080)
 ggplot(mpbk,aes(reorder(Group.2,price),price)) %+%
   theme(axis.text.x = element_text(angle = 0, hjust = 0.5),axis.text=element_text(size=20),
         plot.title = element_text(size = 30),
@@ -181,7 +181,7 @@ melted_med_prices = melt(med_room_type_prices)
 
 # The melted data frame is now plotted. The median prices for each category of rooms for each neighbourhood is plotted.
 # dev.new()
-png('room_type_median_price.png',width = 1920,height = 1080)
+png('reports/room_type_median_price.png',width = 1920,height = 1080)
 ggplot(melted_med_prices,aes(x = neighbourhood,y = value,group = interaction(neighbourhood,value),fill = variable)) %+%
   geom_bar(position = 'dodge',stat='identity') %+% scale_fill_brewer(palette = 'Dark2') %+%
   theme(axis.text.x = element_text(angle = 90, hjust = 1),axis.text=element_text(size=20),
