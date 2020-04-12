@@ -6,7 +6,7 @@
 # most value-for-money deal on Airbnbs in New York City.
 # The project uses the NYC Airbnb data obtained from Kaggle. 
 # (https://www.kaggle.com/dgomonov/new-york-city-airbnb-open-data#AB_NYC_2019.csv) 
-setwd('./Wherebnb')
+setwd('./')
 getwd()
 nyc_ab = read.csv('data/nyc-airbnb.csv')
 head(nyc_ab)
@@ -21,9 +21,12 @@ summary(nyc_ab)
 
 
 # Loading the library to import dplyr, ggplot, etc.
-install.packages('tidyverse')
-library(tidyverse)
-
+# install.packages('tidyverse')
+# library(tidyverse)
+install.packages('ggplot2')
+install.packages('dplyr')
+library(ggplot2)
+library(dplyr)
 
 # What borough do I live in?
 # If I'm looking for a place to stay, I am looking at multiple options so that 
@@ -71,8 +74,8 @@ ggplot(bklyn_neighbourhoods,aes(Var1,Freq)) %+% geom_bar(stat='identity',fill='d
         plot.title = element_text(size = 30),
         legend.text = element_text(size = 20),legend.title = element_text(size = 30),
         axis.title=element_text(size=30,face="bold")) %+% ylim(0,5000) %+%
-  coord_polar() %+% xlab('Count') %+% ylab('Neighbourhood') %+% scale_y_log10() %+%
-  ggtitle('Brooklyn Neighbourhoods with the most Airbnbs (Log10 scale)')
+  coord_polar() %+% xlab('Count') %+% ylab('Neighbourhood') %+% 
+  ggtitle('Brooklyn Neighbourhoods with the most Airbnbs (Log10 scale)') %+% scale_y_log10() 
 dev.off()
 
 # With three, probably more, people involved, it is imperative that I have at least a private room
